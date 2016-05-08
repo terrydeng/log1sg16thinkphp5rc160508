@@ -17,8 +17,8 @@ class Index extends Controller //class Index
 		echo "<br />";
 		
 		foreach(  $dat2a as $da) {
-			echo '<a href="index.php/Index/index/creat1updat1/timestam1/';
-			echo $da['timestamp'];
+			echo '<a href="/index.php/Index/index/creat1updat1/dat1tim1/';
+			echo $da['dat1time'];
 			echo '">';
 			echo $da['timestamp'];
 			
@@ -43,13 +43,28 @@ class Index extends Controller //class Index
 	public function creat1updat1()
 	{
 		$list = Db::table('a1tl_jj1_0log1')
-			->where('atlaststate','=',1)
-//			->where($_GET['timestam1'],'>','timestamp' )
+//			->where('atlaststate','=',1)
+			->where('dat1time','<=', $_GET['dat1tim1'] )
+//			->where($_GET['dat1tim1'],'>=','dat1time' )
 //			->order('timestamp asc')
 			->select();
+			
+	//清空表 :
+		Db::execute('TRUNCATE table a1tl_jj1user1yeji02');
+		
+//		print_r($dat3a);
+		echo "<br />";
+		
+		// 删除数据
+		Db::table('a1tl_jj1user1yeji02')
+			->where('yId2', '>',0)
+			->delete();		
+
+		
 		foreach($list as $lda ) {
 				Db::table('a1tl_jj1user1yeji02')
 				->insert([
+						
 				//下面填写 日志重建（重现内容）20160508
 						'userid'=> $lda['userid'],
 						'yeji'=>$lda['yeji'],
@@ -58,12 +73,44 @@ class Index extends Controller //class Index
 					//日志重建（重现内容）写完毕20160508
 						//
 						'timestamp'=>$lda['timestamp'],
+						'dat1time'=>$lda['dat1time'],
 						'rcud'=>$lda['rcud'],
-						'atlaststate'=>$lda['atlaststate']
+						'atlaststate'=>$lda['atlaststate'],
+						'yid2'=>$lda['yid01']
 						
 				]) ;
 		}
 		
-	}
+		//------------
+				echo "日志重建->显示：";
+		echo "<br />";
+		
+		$dat3a     = Db::table('a1tl_jj1user1yeji02')->select();
+        $this->assign('resul3t',$dat3a);
+
+	
+		foreach(  $dat3a as $da3) {
+			echo '<a href="index.php/Index/index/creat1updat1/dat1tim1/';
+			echo '<a href="index.php/Index/index/';
+			echo $da3['dat1time'];
+			echo '">';
+			echo '返回:'.$da3['timestamp'];
+			
+
+			echo '</a>';
+			
+				foreach($da3 as $d31) {
+					echo "&nbsp;|&nbsp;";
+					echo $d31;
+				}
+			
+			echo "&nbsp;=||";
+			echo "<br />";
+		}//foreach(  $dat2a as $da
+		echo "<br />";
+		
+		
+		//============
+	}//public function creat1updat1(
 	
 }//class Index extends Controller
